@@ -1,0 +1,33 @@
+name: CI/CD Pipeline (Tu Dong Hoa)
+
+# KHI NÀO CHẠY? -> Khi có code mới đẩy vào nhánh main
+on:
+  push:
+    branches: [ "main" ]
+
+# CHẠY NHỮNG GÌ?
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest  # Mượn máy ảo Ubuntu của GitHub
+    
+    steps:
+    # Bước 1: Lấy code về máy ảo
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    # Bước 2: Cài đặt môi trường Node.js
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+
+    # Bước 3: Chạy thử nghiệm (Mô phỏng Test)
+    - name: Test Code
+      run: |
+        echo "Dang kiem tra code..."
+        node -v
+        echo "Code chay tot, khong co loi cu phap!"
+
+    # Bước 4: Thông báo Deploy (Mô phỏng Deploy)
+    - name: Deploy to Server
+      run: echo "Qua trinh Deploy thanh cong!"
