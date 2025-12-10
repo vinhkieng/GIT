@@ -1,12 +1,19 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Web Xem Gio</title>
 </head>
 <body>
-    <h1> Đây là bài GIT</h1>
-    <h2>phiên bản 2.0</h2>
+    <h1>Bây Giờ Là Mấy Giờ?</h1>
+    <p id="time-display">Dang tai...</p>
+    
+    <script>
+        // Doan code nay se goi xuong Backend de lay gio
+        fetch('/api/time')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('time-display').innerText = data.gioHienTai;
+            });
+    </script>
 </body>
 </html>
