@@ -29,46 +29,26 @@
             </div>
     </div>
 
-    <script>
-        // 1. Hàm tải dữ liệu từ Database khi mới vào trang
-        function taiDuLieu() {
-            fetch('/api/database')
-                .then(res => res.json())
+   <script>
+        function layGio() {
+            // Gọi lên server lấy giờ
+            fetch('/api/time')
+                .then(response => response.json())
                 .then(data => {
-                    const html = data.map(item => `
-                        <div class="list-group-item list-group-item-action mb-2">
-                            <div class="d-flex w-100 justify-content-between">
-                                <h6 class="mb-1 fw-bold">${item.ten}</h6>
-                            </div>
-                            <p class="mb-1 text-muted">${item.loiNhan}</p>
-                        </div>
-                    `).join('');
-                    document.getElementById('danh-sach').innerHTML = html;
+                    document.getElementById('time-display').innerText = data.gioHienTai;
+                })
+                .catch(err => {
+                    console.log("Lỗi lấy giờ:", err);
                 });
         }
 
-        // 2. Hàm gửi dữ liệu mới xuống Database
-        function guiLoiNhan() {
-            const ten = document.getElementById('ten').value;
-            const loiNhan = document.getElementById('loiNhan').value;
+        // 1. Gọi ngay lập tức khi vào trang
+        layGio();
 
-            if(!ten || !loiNhan) return alert("Vui lòng nhập đủ thông tin!");
-
-            fetch('/api/them-moi', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ ten: ten, loiNhan: loiNhan })
-            })
-            .then(() => {
-                // Xóa ô nhập và tải lại danh sách
-                document.getElementById('ten').value = '';
-                document.getElementById('loiNhan').value = '';
-                taiDuLieu();
-            });
-        }
-
-        // Chạy hàm tải dữ liệu ngay khi vào trang
-        taiDuLieu();
+        // 2. Cài đặt tự động gọi lại mỗi 1 giây (1000ms)
+        setInterval(layGio, 1000);
     </script>
+</body>
+</html>
 </body>
 </html>
