@@ -3,74 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Web Xem Giờ - Project 1</title>
+    <title>Sổ Lưu Bút Online</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); /* Màu nền tím xanh */
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        .card {
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2); /* Đổ bóng cho khung */
-            border-radius: 15px;
-            border: none;
-            width: 400px;
-        }
-        .btn-custom {
-            background-color: #764ba2;
-            color: white;
-            border-radius: 25px;
-            padding: 10px 30px;
-            font-weight: bold;
-        }
-        .btn-custom:hover {
-            background-color: #5a367e;
-            color: white;
-        }
+        body { background-color: #f0f2f5; padding: 20px; }
+        .container { max-width: 600px; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .list-group-item { border-left: 5px solid #0d6efd; }
     </style>
 </head>
 <body>
 
-    <div class="card text-center p-4">
-        <div class="card-body">
-            <h5 class="card-title text-uppercase text-muted mb-3">Bài Tập Cuối Kỳ</h5>
-            <h2 class="card-text fw-bold mb-4">Xin Chào!</h2>
-            
-            <p class="lead">Bây giờ là:</p>
-            <h1 id="time-display" class="display-4 text-primary fw-bold">...</h1>
-            
-            <hr class="my-4">
-            
-            <p class="small text-muted">Sinh viên: Nguyễn Quang Vinh</p>
-            <p class="small text-muted">Server: Node.js trên Render</p>
-            
-            <button onclick="layGio()" class="btn btn-custom mt-2">Cập nhật giờ</button>
+    <div class="container">
+        <h2 class="text-center mb-4 text-primary">📒 Sổ Lưu Bút Nhóm</h2>
+        
+        <div class="mb-4">
+            <input type="text" id="ten" class="form-control mb-2" placeholder="Nhập tên của bạn...">
+            <input type="text" id="loiNhan" class="form-control mb-2" placeholder="Nhập lời nhắn...">
+            <button onclick="guiLoiNhan()" class="btn btn-primary w-100">Gửi Lưu Bút</button>
         </div>
+
+        <hr>
+
+        <h5 class="mb-3">Danh sách đã lưu trong Database:</h5>
+        <div id="danh-sach" class="list-group">
+            </div>
     </div>
 
     <script>
-        // Hàm gọi lên server lấy giờ
-        function layGio() {
-            document.getElementById('time-display').innerText = "Đang tải...";
-            
-            fetch('/api/time')
-                .then(response => response.json())
+        // 1. Hàm tải dữ liệu từ Database khi mới vào trang
+        function taiDuLieu() {
+            fetch('/api/database')
+                .then(res => res.json())
                 .then(data => {
-                    // Hiển thị giờ nhận được
-                    document.getElementById('time-display').innerText = data.gioHienTai;
-                })
-                .catch(err => {
-                    document.getElementById('time-display').innerText = "Lỗi kết nối!";
+                    const html = data.map(item => `
+                        <div class="list-group-item list-group-item-action mb-2">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h6 class="mb-1 fw-bold">${item.ten}</h6>
+                            </div>
+                            <p class="mb-1 text-muted">${item.loiNhan}</p>
+                        </div>
+                    `).join('');
+                    document.getElementById('danh-sach').innerHTML = html;
                 });
         }
 
-        // Tự động gọi hàm lấy giờ khi mới vào trang
-        layGio();
-    </script>
+        // 2. Hàm gửi dữ liệu mới xuống Database
+        function guiLoiNhan() {
+            const ten = document.getElementById('ten').value;
+            const loiNhan = document.getElementById('loiNhan').value;
 
+            if(!ten || !loiNhan) return alert("Vui lòng nhập đủ thông tin!");
+
+            fetch('/api/them-moi', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ ten: ten, loiNhan: loiNhan })
+            })
+            .then(() => {
+                // Xóa ô nhập và tải lại danh sách
+                document.getElementById('ten').value = '';
+                document.getElementById('loiNhan').value = '';
+                taiDuLieu();
+            });
+        }
+
+        // Chạy hàm tải dữ liệu ngay khi vào trang
+        taiDuLieu();
+    </script>
 </body>
 </html>
