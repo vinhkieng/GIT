@@ -31,3 +31,9 @@ jobs:
     # Bước 4: Thông báo Deploy (Mô phỏng Deploy)
     - name: Deploy to Server
       run: echo "Qua trinh Deploy thanh cong!"
+
+      # ... (các bước checkout, setup node, test ở trên giữ nguyên) ...
+
+    # Bước 4: Ra lệnh cho Render cập nhật (Deploy)
+    - name: Trigger Render Deploy
+      run: curl [https://api.render.com/deploy/srv-d4sf5mk9c44c73el51sg?key=VEDarLe6qto]
