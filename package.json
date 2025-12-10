@@ -1,0 +1,10 @@
+{
+  "name": "bai-tap-cuoi-ky",
+  "version": "1.0.0",
+  "description": "Web xem gio don gian",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {}
+}
